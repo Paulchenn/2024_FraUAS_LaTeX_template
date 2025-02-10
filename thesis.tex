@@ -51,7 +51,7 @@
 %%%%% package Sprachunterstuetzung:
 \usepackage[utf8]{inputenc} % Eingabekodierung auf UTF-8 setzen
 \usepackage[T1]{fontenc}    % Schriftkodierung auf T1 setzen
-\usepackage{babel}[ngerman]
+\usepackage[ngerman]{babel}
 \usepackage{csquotes}
 
 %%%%% Package Multirow ermoeglicht, dass sich ein Kaestchen in einer Tabelle ueber mehrere Zeilen erstrecken kann:
@@ -59,6 +59,7 @@
 \usepackage{array}
 \usepackage{ragged2e}
 \usepackage{booktabs}
+\usepackage{arydshln}
 % Beispiele unter: https://texblog.org/2012/12/21/multi-column-and-multi-row-cells-in-latex-tables/
 %Vereinigung von Feldern in Tabellen:
 %\multicolumn{number cols}{align}{text} % align: l,c,r
@@ -70,19 +71,24 @@
 % \RequirePackage[T1]{fontenc}
 % to imitate Calibri:
 \renewcommand*\familydefault{\sfdefault} %% Base font of the document is to be sans serif
+\usepackage{lipsum}
 
 %%%%%% Grafiken einbinden
+\usepackage{float}
 \usepackage{graphicx}
-\usepackage{tikz}
 \usepackage{subcaption}
-\usepackage{pgfplots}
 \usepackage{lscape}
 \usepackage{svg}
 \usepackage{pgf-pie}
-%\usetikzlibrary{shapes.geometric, arrows}
+\usepackage{transparent}
+\usepackage{pdfpages}
+\usepackage{pgfplots}
 \pgfplotsset{compat=newest}
 \pgfplotsset{plot coordinates/math parser=false}
-\usetikzlibrary{arrows,shapes,positioning,shadows,trees,calc,positioning}
+\usetikzlibrary{patterns,arrows,shapes,positioning,shadows,trees,calc,positioning,external}
+\usepackage{tikz}
+\tikzexternalize[prefix=Figures/tikzexternalize_cache/,optimize command away=\includepdf]
+%\tikzexternaldisable
 % https://golatex.de//wiki/%5cincludegraphics
 
 %%%%%% Fuer Baumdiagramme
@@ -95,6 +101,7 @@
 
 %%%%%% Mathematik-Paket AMSMath:
 \usepackage[fleqn,reqno]{amsmath}
+\usepackage{mathtools}
 %%%%%% Brueche
 \usepackage{nicefrac} % For comparison
 \usepackage{xfrac}    % Works better with other fonts
@@ -127,9 +134,11 @@
 \usepackage{tabularx}
 % \usepackage{xltabular}
 \def\tabularxcolumn#1{m{#1}}
-%\usepackage{enumitem}
+\usepackage{enumitem}
+%\usepackage{enumerate}
 \usepackage{layouts}
 \usepackage{listliketab}
+\usepackage{rotating} 
 
 % Boxen für Lickert Skalen
 \usepackage{wasysym}
@@ -162,7 +171,7 @@
 %\fancyhead[c]{\hspace*{0.15\textwidth}\rightmark}
 %\fancyhead[C]{\usebox\headbox}                        % Zentrierte Kopfzeile
 \fancyhead[R]{
-	\makebox[0.2\textwidth]{\raisebox{-1ex}{\hspace*{10ex}\includegraphics[width=0.1\textwidth]{Figures/FraUas_Logo.pdf}}}
+	\makebox[0.2\textwidth]{\raisebox{-5ex}{\hspace*{9.5ex}\includegraphics[width=0.1\textwidth]{Figures/pdf/FraUas_Logo.pdf}}}
 }  % Kopfzeile rechts
 \renewcommand{\headrulewidth}{0.4pt} % Obere Trennlinie
 %\fancyfoot[L]{\today}
@@ -201,11 +210,15 @@
 %%%%% Sektionstitel nach CI-Farben einfärben:
 \usepackage{titlesec}
 \titleformat{\section}
-{\color{FRAUAS_Blue_Dark}\normalfont\Large\bfseries} %Titel
-{\color{FRAUAS_Blue_Dark}\thesection}{1em}{}
+{\color{blue50}\normalfont\Large\bfseries} %Titel
+{\color{blue50}\thesection}{1em}{}
+%{\color{FRAUAS_Blue_Dark}\normalfont\Large\bfseries} %Titel
+%{\color{FRAUAS_Blue_Dark}\thesection}{1em}{}
 \titleformat{\subsection}
-{\color{FRAUAS_Blue_Dark}\normalfont\large\bfseries} %Titel
-{\color{FRAUAS_Blue_Dark}\thesubsection}{1em}{}
+{\color{blue50}\normalfont\large\bfseries} %Titel
+{\color{blue50}\thesubsection}{1em}{}
+%{\color{FRAUAS_Blue_Dark}\normalfont\large\bfseries} %Titel
+%{\color{FRAUAS_Blue_Dark}\thesubsection}{1em}{}
 \titleformat{\subsubsection}
 {\color{black}\normalfont\bfseries} %Titel
 {\color{black}\thesubsection}{0.5em}{}
@@ -230,8 +243,10 @@
 	filecolor=black,      
 	urlcolor=black,
 	pdftitle={Thesis},
-	pdfpagemode=FullScreen,
 	citecolor=black,
+	pdfpagemode=UseNone, % Keine automatische Ansichtseinstellung
+	pdfstartpage=1,      % Startet auf der ersten Seite
+	pdfstartview=Fit     % Zeigt die gesamte Seite im Fenster
 }
 
 %\usepackage[hyphens]{url}  %% stellt \url{} zur Verfuegung
@@ -263,6 +278,12 @@
 \usepackage[printonlyused]{acronym}
 \usepackage{tocloft}
 %\input{TeXFiles/005_Acronyms}
+
+%%%%% Glossar einbinden
+\usepackage{glossaries}
+\input{TeXFiles/005_Glossar.tex}
+%\usepackage[record]{bib2gls}
+%\addbibresource{Glossar.bib}
 
 \setcounter{tocdepth}{1} % Inhaltsverzeichnis bis zur 2. Nummerierungstiefe
 
@@ -331,7 +352,14 @@
 	\listoffigures
 	\newpage
 	\listoftables
-	\chapter*{Abkürzungsverzeichnis}
+	
+	\ifdefined\ThesisLanguageIsEnglish
+		\printglossary[title=Glossary, toctitle=Glossary]
+	\else
+	%		\printglossary[title=Glossar, toctitle=Glossar]
+		\printglossaries
+	\fi
+	
 	\input{TeXFiles/004_Acronyms}
 	
 	\clearpage
@@ -347,11 +375,14 @@
 	\input{TeXFiles/010_Kurzfassung}
 	%\input{TeXFiles/004_LaTeXHowTo}      %%%%%% <<<<<< nach dem ersten Ansehen, bitte diese Zeile auskommentieren
 	\input{TeXFiles/020_Einfuehrung}
-	\input{TeXFiles/040_StandDerTechnik}
-	\input{TeXFiles/030_Hintergrund}
-	\input{TeXFiles/050_Datenerzeugung}
-	\input{TeXFiles/060_Datenanalyse}
-	\input{TeXFiles/070_Ergebnisse}
+	\input{TeXFiles/030_StandDerTechnik}
+	\input{TeXFiles/031_Hintergrund}
+	\input{TeXFiles/040_Gruppierung}
+	\input{TeXFiles/041_VAE}
+%	\input{TeXFiles/042_Auswertetools}
+%	\input{TeXFiles/043_Datenerzeugung}
+%	\input{TeXFiles/044_Datenanalyse}
+%	\input{TeXFiles/050_Ergebnisse}
 	\input{TeXFiles/100_Zusammenfassung}
 
 	\begin{appendix}
@@ -365,12 +396,6 @@
 	%\addcontentsline{toc}{section}{Abbreviations} 
 	%\addcontentsline{toc}{chapter*}{Verzeichnis: Akronyme} 
 	\clearpage
-
-	\ifdefined\ThesisLanguageIsEnglish
-		\printglossary[title=Glossary, toctitle=Glossary]
-	\else
-		%\printglossary[title=Glossar, toctitle=Glossar]
-	\fi
 
 	%Falls man die Überschrift des Literaturverzeichnisses aendern moechte, geht das durch Verwendung der folgenden Zeile:
 	\renewcommand*{\refname}{Literaturverzeichnis}
