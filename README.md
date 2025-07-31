@@ -1,3 +1,4 @@
-# 2024_BA_Bosch
+# LaTeX-template für Einzelabgaben bei der Frankfurt University of Applied Sciences
 
-15.08.2024: Setting up Project.
+Ursprünglich erstellt von Prof. Dr.-Ing. Thomas Hollstein.
+Abgeändert von Paul Glaser, B. Eng.
